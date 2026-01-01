@@ -1,63 +1,27 @@
-# 🚀 Godot Apklis Updater
+# Godot Apklis Updater
 
-```
- ██████╗  ██████╗ ██████╗  ██████╗ ████████╗    
-██╔════╝ ██╔═══██╗██╔══██╗██╔═══██╗╚══██╔══╝    
-██║  ███╗██║   ██║██║  ██║██║   ██║   ██║       
-██║   ██║██║   ██║██║  ██║██║   ██║   ██║       
-╚██████╔╝╚██████╔╝██████╔╝╚██████╔╝   ██║       
- ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝       
-                                                  
-     █████╗ ██████╗ ██╗  ██╗██╗     ██╗███████╗ 
-    ██╔══██╗██╔══██╗██║ ██╔╝██║     ██║██╔════╝ 
-    ███████║██████╔╝█████╔╝ ██║     ██║███████╗ 
-    ██╔══██║██╔═══╝ ██╔═██╗ ██║     ██║╚════██║ 
-    ██║  ██║██║     ██║  ██╗███████╗██║███████║ 
-    ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝╚══════╝ 
-                                                  
-██╗   ██╗██████╗ ██████╗  █████╗ ████████╗███████╗██████╗ 
-██║   ██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
-██║   ██║██████╔╝██║  ██║███████║   ██║   █████╗  ██████╔╝
-██║   ██║██╔═══╝ ██║  ██║██╔══██║   ██║   ██╔══╝  ██╔══██╗
-╚██████╔╝██║     ██████╔╝██║  ██║   ██║   ███████╗██║  ██║
- ╚═════╝ ╚═╝     ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+Sistema de verificación de actualizaciones para aplicaciones Android publicadas en [Apklis](https://www.apklis.cu), diseñado para proyectos en Godot 4.5+ (Probablemente tambien funcione en versiones anteriores).
 
-```
-
-**Sistema robusto de verificación de actualizaciones para aplicaciones Android publicadas en [Apklis](https://www.apklis.cu), diseñado para Godot 4.5+**
+Este proyecto nació por una necesidad práctica: mientras desarrollaba mi primer juego, *Trisquellum*, necesitaba una forma confiable de consultar la API de Apklis y notificar al usuario cuando existiera una versión más reciente. Con el tiempo lo convertí en un addon reutilizable y configurable, pensado para integrarse como AutoLoad y usarse desde GDScript.
 
 ![Godot 4.5+](https://img.shields.io/badge/Godot-4.5+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
-![Version](https://img.shields.io/badge/version-2.0-orange.svg)
 
-## 🎯 Novedades de la versión 2.0
+## Características
 
-- ✨ **Sistema de reintentos automático** con configuración flexible
-- ✨ **Cache inteligente** de resultados (reduce peticiones innecesarias)
-- ✨ **Múltiples formas de configuración** (manual, project.godot, JSON)
-- ✨ **Validación exhaustiva** con códigos de error específicos
-- ✨ **API asíncrona** con soporte para `await`
-- ✨ **Logs mejorados** para debug y diagnóstico
-- ✨ **Inicialización lazy** (sin problemas de timing)
-- ✨ **100% compatible** con versión anterior
+- **Verificación de actualizaciones** desde la API de Apklis.
+- **Reintentos configurables** para conexiones inestables.
+- **Cache de resultados** para evitar peticiones innecesarias.
+- **Diálogo de actualización** personalizable.
+- **Señales** para integrar el flujo en UI/lógica de juego.
+- **Validación** de `package_name` y de respuestas de la API.
+- **Códigos de error** para diagnóstico.
+- **Configuración flexible** (manual, `project.godot`, JSON).
+- **API síncrona y asíncrona** (con soporte para `await`).
+- **Sin dependencias externas** (GDScript).
 
-## 📋 Características
-
-- ✅ **Verificación automática** de actualizaciones desde la API de Apklis
-- ✅ **Sistema de reintentos** inteligente para conexiones inestables
-- ✅ **Cache de resultados** (5 minutos por defecto, configurable)
-- ✅ **Diálogo personalizable** para notificar al usuario
-- ✅ **Sistema de señales** robusto para manejar eventos
-- ✅ **Validación exhaustiva** de package names y respuestas API
-- ✅ **Códigos de error específicos** para mejor debugging
-- ✅ **Múltiples métodos de configuración**
-- ✅ **API síncrona y asíncrona** (con soporte para `await`)
-- ✅ **Sin dependencias externas** - solo código GDScript puro
-- ✅ **Compatible con AutoLoad** para uso global
-- ✅ **Ejemplos completos** de implementación
-
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ### Instalación
 
@@ -71,7 +35,7 @@
 
 ```gdscript
 func _ready():
-    ApklisUpdate.configure("cu.empresa.mijuego", 1)
+    ApklisUpdate.configure("cu.empresa.mijuego", 42)
     ApklisUpdate.update_available.connect(_on_update_available)
     ApklisUpdate.check_for_updates()
 
@@ -79,14 +43,14 @@ func _on_update_available(info: Dictionary):
     print("Nueva versión: ", info.latest_version_name)
 ```
 
-## 📖 Guías de Uso
+## Guías de Uso
 
 ### Opción 1: Configuración Manual (Recomendada)
 
 ```gdscript
 func _ready():
     # Configuración básica
-    ApklisUpdate.configure("cu.empresa.mijuego", 1)
+    ApklisUpdate.configure("cu.empresa.mijuego", 42)
     
     # Configuración avanzada (opcional)
     ApklisUpdate.set_retry_config(3, 5.0)  # 3 reintentos, 5s entre ellos
@@ -110,7 +74,7 @@ En `project.godot`:
 ```ini
 [application]
 config/apklis_package_name="cu.empresa.mijuego"
-config/version_code=1
+config/version_code=42
 ```
 
 En tu código:
@@ -126,7 +90,7 @@ Crea `res://apklis_config.json`:
 ```json
 {
   "package_name": "cu.empresa.mijuego",
-  "version_code": 1
+  "version_code": 42
 }
 ```
 
@@ -135,79 +99,6 @@ En tu código:
 func _ready():
     if ApklisUpdate.configure_from_json("res://apklis_config.json"):
         ApklisUpdate.check_for_updates()
-```
-
-### Opción 4: Uso Asíncrono (await)
-
-```gdscript
-func _ready():
-    ApklisUpdate.configure("cu.empresa.mijuego", 1)
-    
-    var result = await ApklisUpdate.check_for_updates_async()
-    
-    if result.has("error"):
-        print("Error: ", result.error)
-    elif result.has_update:
-        print("¡Actualización disponible!")
-        print("Nueva versión: ", result.latest_version_name)
-    else:
-        print("Todo actualizado")
-```
-
-## 🔧 API Reference
-
-### Métodos de Configuración
-
-| Método | Descripción |
-|--------|-------------|
-| `configure(package_name, version_code)` | Configura el checker (forma recomendada) |
-| `configure_from_project_settings()` | Lee config desde project.godot |
-| `configure_from_json(path)` | Lee config desde archivo JSON |
-| `set_retry_config(max, delay)` | Configura reintentos (default: 2, 3.0s) |
-| `set_timeout(seconds)` | Establece timeout HTTP (default: 30s) |
-| `set_cache_enabled(enabled)` | Habilita/deshabilita cache |
-| `clear_cache()` | Limpia el cache manualmente |
-
-### Métodos de Verificación
-
-| Método | Descripción |
-|--------|-------------|
-| `check_for_updates(force_check)` | Verifica actualizaciones (ignora cache si force=true) |
-| `check_for_updates_async()` | Versión asíncrona, retorna Dictionary |
-| `cancel_check()` | Cancela verificación en curso |
-
-### Métodos de Utilidad
-
-| Método | Descripción |
-|--------|-------------|
-| `get_status()` | Retorna Dictionary con estado actual |
-| `get_last_error_code()` | Retorna último ErrorCode |
-| `get_last_error_string()` | Retorna descripción del último error |
-
-### Señales
-
-```gdscript
-signal update_available(update_info: Dictionary)   # Hay actualización
-signal no_update_available(current_info: Dictionary) # No hay actualización
-signal update_check_failed(error: String)           # Error en verificación
-signal update_check_started()                       # Inició verificación
-signal configuration_changed()                      # Cambió configuración
-```
-
-### ErrorCode Enum
-
-```gdscript
-enum ErrorCode {
-    NONE = 0,                  # Sin error
-    NOT_CONFIGURED = 1,        # No está configurado
-    NETWORK_ERROR = 2,         # Error de red
-    HTTP_ERROR = 3,            # Error HTTP (500, 503, etc)
-    JSON_PARSE_ERROR = 4,      # Error parseando JSON
-    NO_APP_FOUND = 5,          # App no encontrada en Apklis
-    NO_RELEASE_INFO = 6,       # No hay info de release
-    TIMEOUT = 7,               # Timeout de conexión
-    INVALID_PACKAGE_NAME = 8,  # Package name inválido
-}
 ```
 
 ### Estructura update_info
@@ -219,7 +110,7 @@ enum ErrorCode {
     "description": String,           # Descripción
     "current_version_code": int,     # Versión actual
     "latest_version_code": int,      # Última versión en Apklis
-    "latest_version_name": String,   # Nombre de versión (ej: "1.2.0")
+    "latest_version_name": String,   # Nombre de versión (ej: "x.y.z")
     "changelog": String,             # Lista de cambios
     "download_url": String,          # URL del APK
     "size": String,                  # Tamaño legible (ej: "50 MB")
@@ -230,7 +121,7 @@ enum ErrorCode {
 }
 ```
 
-## 💡 Ejemplos de Uso
+## Ejemplos de Uso
 
 ### Debug y Diagnóstico
 
@@ -260,7 +151,7 @@ func _show_debug_info():
 var update_timer: Timer
 
 func _ready():
-    ApklisUpdate.configure("cu.empresa.mijuego", 1)
+    ApklisUpdate.configure("cu.empresa.mijuego", 42)
     
     # Verificar cada 6 horas
     update_timer = Timer.new()
@@ -275,36 +166,11 @@ func _check_updates():
     ApklisUpdate.check_for_updates(true)  # Forzar, ignorar cache
 ```
 
-### Botón en Menú de Configuración
-
-```gdscript
-@onready var check_button = $CheckButton
-@onready var status_label = $StatusLabel
-
-func _ready():
-    ApklisUpdate.configure("cu.empresa.mijuego", 1)
-    check_button.pressed.connect(_on_check_pressed)
-    
-    ApklisUpdate.update_available.connect(func(info):
-        status_label.text = "¡Actualización disponible!"
-    )
-    ApklisUpdate.no_update_available.connect(func(info):
-        status_label.text = "Estás en la última versión"
-    )
-    ApklisUpdate.update_check_failed.connect(func(error):
-        status_label.text = "Error: " + error
-    )
-
-func _on_check_pressed():
-    status_label.text = "Verificando..."
-    ApklisUpdate.check_for_updates()
-```
-
 ### Manejo Completo de Errores
 
 ```gdscript
 func _ready():
-    if not ApklisUpdate.configure("cu.empresa.mijuego", 1):
+    if not ApklisUpdate.configure("cu.empresa.mijuego", 42):
         push_error("No se pudo configurar ApklisUpdate")
         return
     
@@ -315,73 +181,27 @@ func _on_check_failed(error: String):
     var error_code = ApklisUpdate.get_last_error_code()
     
     match error_code:
-        ApklisUpdateChecker.ErrorCode.NOT_CONFIGURED:
+        ApklisUpdate.ErrorCode.NOT_CONFIGURED:
             push_error("Sistema no configurado")
-        ApklisUpdateChecker.ErrorCode.NETWORK_ERROR:
+        ApklisUpdate.ErrorCode.NETWORK_ERROR:
             print("Sin conexión, reintentando más tarde...")
             _schedule_retry()
-        ApklisUpdateChecker.ErrorCode.NO_APP_FOUND:
+        ApklisUpdate.ErrorCode.NO_APP_FOUND:
             push_error("App no encontrada en Apklis")
-        ApklisUpdateChecker.ErrorCode.INVALID_PACKAGE_NAME:
+        ApklisUpdate.ErrorCode.INVALID_PACKAGE_NAME:
             push_error("Package name inválido")
         _:
             push_warning("Error: ", error)
 ```
 
-Más ejemplos en [`examples/`](examples/)
-
-## 🔍 Sistema de Cache
-
-El cache reduce peticiones innecesarias a la API:
-
-```gdscript
-# Cache habilitado por defecto (5 minutos)
-ApklisUpdate.use_cache = true
-
-# Deshabilitar cache
-ApklisUpdate.set_cache_enabled(false)
-
-# Limpiar cache manualmente
-ApklisUpdate.clear_cache()
-
-# Forzar verificación ignorando cache
-ApklisUpdate.check_for_updates(true)
-```
-
-**Cuándo se usa el cache:**
-- Múltiples llamadas a `check_for_updates()` en menos de 5 minutos
-- El cache se invalida automáticamente después de 5 minutos
-- Se puede deshabilitar completamente si se prefiere
-
-## 🛠️ Sistema de Reintentos
-
-Configuración flexible para conexiones inestables:
-
-```gdscript
-# Configurar reintentos
-ApklisUpdate.set_retry_config(
-    3,     # Máximo 3 reintentos
-    5.0    # 5 segundos entre cada intento
-)
-
-# Los siguientes errores activan reintentos:
-# - Errores de red (NETWORK_ERROR)
-# - Errores HTTP 500, 502, 503 (servidor)
-
-# Estos errores NO reintentan (fallan inmediatamente):
-# - HTTP 400, 403, 404 (errores del cliente)
-# - Errores de parsing JSON
-# - App no encontrada
-```
-
-## ⚙️ Configuración Android
+## Configuración Android
 
 ### 1. Export Preset
 
 En **Proyecto → Configuración de Exportación → Android**:
 - **Package/Unique Name:** `cu.empresa.mijuego`
-- **Version/Code:** `1` (incrementar en cada versión)
-- **Version/Name:** `"1.0.0"`
+- **Version/Code:** `42` (incrementar en cada publicación)
+- **Version/Name:** `"x.y.z"`
 
 ### 2. Publicación en Apklis
 
@@ -389,13 +209,13 @@ En **Proyecto → Configuración de Exportación → Android**:
 - Sube tu APK con el mismo `package_name`
 - Incrementa el `version_code` en cada actualización
 
-## 🧪 Testing
+## Testing
 
 ### Probar con app de ejemplo
 
 ```gdscript
 # Prueba con la app oficial de Apklis
-ApklisUpdate.configure("cu.uci.android.apklis", 1)
+ApklisUpdate.configure("cu.uci.android.apklis", 10)
 ApklisUpdate.check_for_updates()
 ```
 
@@ -403,7 +223,7 @@ ApklisUpdate.check_for_updates()
 
 ```gdscript
 # Fuerza detección de actualización
-ApklisUpdate.configure("cu.empresa.mijuego", 1)  # Versión muy baja
+ApklisUpdate.configure("cu.empresa.mijuego", 10)  # Version code intencionalmente bajo
 ApklisUpdate.check_for_updates()
 ```
 
@@ -415,7 +235,7 @@ ApklisUpdate.update_available.connect(func(info):
 )
 ```
 
-## 🐛 Solución de Problemas
+## Solución de Problemas
 
 | Problema | Solución |
 |----------|----------|
@@ -427,37 +247,13 @@ ApklisUpdate.update_available.connect(func(info):
 | Cache no funciona | Verifica con `get_status()` si está habilitado |
 | Reintentos no funcionan | Algunos errores no reintentan (400, 404, JSON parse) |
 
-## 📊 Migración desde v1.x
-
-La versión 2.0 es **100% compatible** con código anterior:
-
-```gdscript
-# v1.x - SIGUE FUNCIONANDO
-ApklisUpdate.package_name = "cu.empresa.app"
-ApklisUpdate.set_version_code(1)
-ApklisUpdate.check_for_updates()
-
-# v2.0 - NUEVO (recomendado)
-ApklisUpdate.configure("cu.empresa.app", 1)
-ApklisUpdate.check_for_updates()
-```
-
-**Nuevas características en v2.0:**
-- Sistema de reintentos
-- Cache de resultados
-- Múltiples formas de configuración
-- API asíncrona
-- Validación exhaustiva
-- Códigos de error específicos
-- Mejor logging
-
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 godot-apklis-updater/
 ├── addons/
 │   └── apklis_update/
-│       ├── ApklisUpdateChecker.gd      # Script principal (v2.0)
+│       ├── ApklisUpdateChecker.gd      # Script principal
 │       ├── ApklisUpdateDialog.gd       # Diálogo personalizado
 │       ├── apklis_update_dialog.tscn   # Escena del diálogo
 │       ├── plugin.cfg                  # Config del plugin
@@ -477,14 +273,14 @@ godot-apklis-updater/
 └── LICENSE                             # Licencia MIT
 ```
 
-## 📚 Documentación Adicional
+## Documentación Adicional
 
 - [**QUICK_START.md**](QUICK_START.md) - Guía rápida de inicio
 - [**API_REFERENCE.md**](API_REFERENCE.md) - Referencia completa de la API
 - [**CHANGELOG.md**](CHANGELOG.md) - Historial de cambios
 - [**examples/README.md**](examples/README.md) - Guía de ejemplos
 
-## 🤝 Contribuciones
+## Contribuciones
 
 ¡Las contribuciones son bienvenidas!
 
@@ -496,30 +292,17 @@ godot-apklis-updater/
 
 Ver [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles.
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver [LICENSE](LICENSE) para detalles.
 
-## 🇨🇺 Acerca de Apklis
-
-[Apklis](https://www.apklis.cu) es la tienda de aplicaciones oficial de Cuba, desarrollada por la Universidad de las Ciencias Informáticas (UCI). Este proyecto facilita la integración de actualizaciones para desarrolladores que publican en esta plataforma.
-
-## 🙏 Agradecimientos
-
-- Basado en [apklisupdate](https://github.com/Z17-CU/apklisupdate) para Android nativo
-- Comunidad de Godot Cuba
-- Todos los contribuidores
-
-## 📞 Soporte
+## Soporte
 
 ¿Necesitas ayuda?
 
-- 📝 [Abre un Issue](../../issues)
-- 💬 Únete a la comunidad de Godot Cuba
-- 📖 Revisa la [documentación](API_REFERENCE.md)
+- [Abre un Issue](../../issues)
+- Revisa la [documentación](API_REFERENCE.md)
 
 ---
 
-**Desarrollado con ❤️ para la comunidad de desarrolladores de Godot en Cuba 🇨🇺**
-
-**v2.0** - Sistema robusto, extensible y fácil de usar
+Desarrollado a partir de una necesidad real durante el desarrollo de *Trisquellum*.
