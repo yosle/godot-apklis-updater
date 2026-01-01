@@ -2,7 +2,7 @@
 
 Sistema de verificación de actualizaciones para aplicaciones Android publicadas en [Apklis](https://www.apklis.cu), diseñado para proyectos en Godot 4.5+ (Probablemente tambien funcione en versiones anteriores).
 
-Este proyecto nació por una necesidad práctica: mientras desarrollaba mi primer juego, *Trisquellum*, necesitaba una forma confiable de consultar la API de Apklis y notificar al usuario cuando existiera una versión más reciente. Con el tiempo lo convertí en un addon reutilizable y configurable, pensado para integrarse como AutoLoad y usarse desde GDScript.
+Este proyecto nació por una necesidad práctica: mientras aprendo GODOT y desarrollaba mi primer juego, *Trisquellum*, necesitaba una forma de consultar la API de Apklis y notificar al usuario cuando existiera una versión más reciente. Debiado a que es un feature bastante util para todos los que publican allí; con el tiempo lo convertí en un addon reutilizable y configurable, pensado para integrarse como AutoLoad y usarse desde GDScript.
 
 ![Godot 4.5+](https://img.shields.io/badge/Godot-4.5+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
