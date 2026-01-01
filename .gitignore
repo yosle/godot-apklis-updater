@@ -1,0 +1,15 @@
+.godot/
+export_presets.cfg
+*.import
+*.translation
+.mono/
+data_*/
+android/
+ios/
+*.apk
+*.ipa
+*.zip
+*.tar.gz
+.DS_Store
+Thumbs.db
+*.log
