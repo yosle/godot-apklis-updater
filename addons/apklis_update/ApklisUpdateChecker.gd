@@ -488,11 +488,28 @@ func _show_update_dialog(info: Dictionary) -> void:
 	get_tree().root.add_child(dialog)
 	
 	dialog.title = "Actualización disponible"
+	
+	# Obtener tamaño del viewport para calcular límites
+	var viewport_size = Vector2(get_viewport().get_visible_rect().size)
+	var max_dialog_width = min(500, viewport_size.x * 0.8)
+	
+	# Estimar caracteres por línea basado en ancho (aproximado)
+	# Asumiendo ~8 pixels por carácter en fuente normal
+	var chars_per_line = int(max_dialog_width / 8.0)
+	
+	# Limitar el texto del changelog
+	var changelog_text = _clean_html(info.changelog)
+	var max_chars = chars_per_line * 8  # 8 líneas máximo
+	if changelog_text.length() > max_chars:
+		changelog_text = changelog_text.substr(0, max_chars) + "..."
+	
+	# Insertar saltos de línea en texto largo para evitar líneas muy anchas
+	changelog_text = _wrap_text(changelog_text, chars_per_line)
+	
 	dialog.dialog_text = """
-Nueva versión disponible: %s
+Nueva versión: %s
 
-Versión actual: v%d
-Nueva versión: v%d
+Actual: v%d → Nueva: v%d
 
 Cambios:
 %s
@@ -502,7 +519,7 @@ Tamaño: %s
 		info.latest_version_name,
 		info.current_version_code,
 		info.latest_version_code,
-		info.changelog,
+		changelog_text,
 		info.size
 	]
 	
@@ -512,7 +529,82 @@ Tamaño: %s
 	dialog.close_requested.connect(func(): dialog.queue_free())
 	
 	dialog.add_cancel_button("Más tarde")
+	
+	# Establecer tamaño mínimo y máximo antes de mostrar
+	dialog.min_size = Vector2(280, 200)
+	dialog.max_size = Vector2(
+		min(500, viewport_size.x * 0.8),
+		min(400, viewport_size.y * 0.8)
+	)
+	
+	# Centrar el diálogo
 	dialog.popup_centered()
+
+## Envuelve texto largo en líneas más cortas
+func _wrap_text(text: String, max_chars: int) -> String:
+	if text.length() <= max_chars:
+		return text
+	
+	var lines: Array[String] = []
+	var current_line = ""
+	var words = text.split(" ")
+	
+	for word in words:
+		if current_line.length() + word.length() + 1 <= max_chars:
+			if current_line != "":
+				current_line += " "
+			current_line += word
+		else:
+			if current_line != "":
+				lines.append(current_line)
+			current_line = word
+	
+	if current_line != "":
+		lines.append(current_line)
+	
+	return "\n".join(lines)
+
+## Limpia etiquetas HTML del texto y deja solo el contenido
+func _clean_html(html_text: String) -> String:
+	if html_text.is_empty():
+		return ""
+	
+	var text = html_text
+	
+	# Reemplazar etiquetas de bloque con saltos de línea
+	text = text.replace("</p>", "\n")
+	text = text.replace("</div>", "\n")
+	text = text.replace("</h1>", "\n")
+	text = text.replace("</h2>", "\n")
+	text = text.replace("</h3>", "\n")
+	text = text.replace("</h4>", "\n")
+	text = text.replace("</h5>", "\n")
+	text = text.replace("</h6>", "\n")
+	text = text.replace("<br>", "\n")
+	text = text.replace("<br/>", "\n")
+	text = text.replace("<br />", "\n")
+	text = text.replace("</li>", "\n")
+	
+	# Remover todas las etiquetas HTML usando regex
+	var regex = RegEx.new()
+	regex.compile("<[^>]+>")
+	text = regex.sub(text, "", true)
+	
+	# Decodificar entidades HTML comunes
+	text = text.replace("&nbsp;", " ")
+	text = text.replace("&amp;", "&")
+	text = text.replace("&lt;", "<")
+	text = text.replace("&gt;", ">")
+	text = text.replace("&quot;", '"')
+	text = text.replace("&#39;", "'")
+	
+	# Limpiar espacios múltiples y saltos de línea excesivos
+	regex.compile("\\n{3,}")
+	text = regex.sub(text, "\n\n", true)
+	regex.compile(" {2,}")
+	text = regex.sub(text, " ", true)
+	
+	return text.strip_edges()
 
 func _open_apklis_page(pkg_name: String) -> void:
 	var url = "https://www.apklis.cu/application/" + pkg_name
