@@ -49,10 +49,8 @@ enum ErrorCode {
 #endregion
 
 #region Configuration
-## Nombre del paquete de la aplicación
 var package_name: String = ""
 
-## Código de versión actual (se obtiene automáticamente en Android)
 var current_version_code: int = 0
 
 ## Si es true, muestra un diálogo automático cuando hay actualización
@@ -60,16 +58,12 @@ var current_version_code: int = 0
 ## y conecta la señal update_available para mostrar tu propio diálogo
 var show_dialog_on_update: bool = true
 
-## Timeout para las peticiones HTTP (en segundos)
 var request_timeout: float = DEFAULT_TIMEOUT
 
-## Número máximo de reintentos en caso de error
 var max_retries: int = DEFAULT_MAX_RETRIES
 
-## Tiempo de espera entre reintentos (en segundos)
 var retry_delay: float = DEFAULT_RETRY_DELAY
 
-## Si es true, usa caché para reducir peticiones a la API
 var use_cache: bool = true
 #endregion
 
@@ -89,19 +83,16 @@ func _ready():
 	_setup_http_request()
 	_setup_timer()
 	
-	# Intentar configuración automática desde project settings
 	if ProjectSettings.has_setting("application/config/apklis_package_name"):
 		var pkg = ProjectSettings.get_setting("application/config/apklis_package_name")
 		if pkg and pkg != "":
 			package_name = pkg
 	
-	# Obtener versión automáticamente en Android
 	if OS.has_feature("android"):
 		current_version_code = _get_android_version_code()
 		if current_version_code > 0:
 			_is_configured = true
 	
-	# Log inicial
 	_log_info("ApklisUpdateChecker inicializado")
 	if _is_configured:
 		_log_info("Auto-configurado: %s (v%d)" % [package_name, current_version_code])
@@ -122,8 +113,6 @@ func _setup_timer():
 #endregion
 
 #region Public Configuration Methods
-## Configura el checker con los parámetros básicos
-## Este es el método recomendado para configurar el sistema
 func configure(pkg_name: String, version_code: int = 0) -> bool:
 	if not _validate_package_name(pkg_name):
 		_log_error("Nombre de paquete inválido: %s" % pkg_name)
@@ -138,8 +127,6 @@ func configure(pkg_name: String, version_code: int = 0) -> bool:
 	configuration_changed.emit()
 	return true
 
-## Configura desde los project settings de Godot
-## Busca: application/config/apklis_package_name y application/config/version_code
 func configure_from_project_settings() -> bool:
 	var pkg = ProjectSettings.get_setting("application/config/apklis_package_name", "")
 	var version = ProjectSettings.get_setting("application/config/version_code", 0)
@@ -150,8 +137,6 @@ func configure_from_project_settings() -> bool:
 	
 	return configure(pkg, version)
 
-## Configura desde un archivo JSON
-## Formato esperado: {"package_name": "com.example.app", "version_code": 1}
 func configure_from_json(json_path: String) -> bool:
 	if not FileAccess.file_exists(json_path):
 		_log_error("Archivo no encontrado: %s" % json_path)
@@ -182,27 +167,23 @@ func configure_from_json(json_path: String) -> bool:
 	
 	return configure(pkg, version)
 
-## Configura los parámetros de reintento
 func set_retry_config(max_retry: int, delay: float) -> void:
 	max_retries = max(0, max_retry)
 	retry_delay = max(0.1, delay)
 	_log_info("Configuración de reintentos: max=%d, delay=%.1fs" % [max_retries, retry_delay])
 
-## Establece el timeout de las peticiones HTTP
 func set_timeout(timeout: float) -> void:
 	request_timeout = max(1.0, timeout)
 	if _http_request:
 		_http_request.timeout = request_timeout
 	_log_info("Timeout establecido: %.1fs" % request_timeout)
 
-## Habilita o deshabilita el caché
 func set_cache_enabled(enabled: bool) -> void:
 	use_cache = enabled
 	if not enabled:
 		clear_cache()
 	_log_info("Caché %s" % ("habilitado" if enabled else "deshabilitado"))
 
-## Limpia el caché de resultados
 func clear_cache() -> void:
 	_cached_result.clear()
 	_cache_timestamp = 0.0
@@ -210,41 +191,32 @@ func clear_cache() -> void:
 #endregion
 
 #region Public Check Methods
-## Verifica si hay actualizaciones disponibles
-## Retorna true si la verificación se inició correctamente
 func check_for_updates(force_check: bool = false) -> bool:
-	# Validar configuración
 	if not _is_configured or package_name == "":
 		_log_error("No está configurado. Llama a configure() primero")
 		_last_error = ErrorCode.NOT_CONFIGURED
 		update_check_failed.emit("Not configured")
 		return false
 	
-	# Verificar si ya hay una verificación en curso
 	if _is_checking:
 		_log_warning("Ya hay una verificación en curso")
 		return false
 	
-	# Usar caché si está disponible y no es forzado
 	if not force_check and use_cache and _is_cache_valid():
 		_log_info("Usando resultado en caché")
 		_emit_cached_result()
 		return true
 	
-	# Iniciar verificación
 	_is_checking = true
 	_retry_count = 0
 	update_check_started.emit()
 	
 	return _perform_check()
 
-## Verifica actualizaciones de forma asíncrona y espera el resultado
-## Retorna el resultado de la verificación o null si hay error
 func check_for_updates_async() -> Dictionary:
 	if not check_for_updates():
 		return {}
 	
-	# Esperar a que termine la verificación
 	var result = {}
 	
 	var update_callback = func(info: Dictionary):
@@ -262,14 +234,12 @@ func check_for_updates_async() -> Dictionary:
 	no_update_available.connect(no_update_callback, CONNECT_ONE_SHOT)
 	update_check_failed.connect(error_callback, CONNECT_ONE_SHOT)
 	
-	# Esperar resultado con timeout
 	var timeout_time = Time.get_ticks_msec() + (request_timeout + 1.0) * 1000
 	while result.is_empty() and Time.get_ticks_msec() < timeout_time:
 		await get_tree().process_frame
 	
 	return result
 
-## Cancela la verificación actual
 func cancel_check() -> void:
 	if not _is_checking:
 		return
@@ -304,17 +274,14 @@ func _perform_check() -> bool:
 func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 	_is_checking = false
 	
-	# Validar resultado de la petición
 	if result != HTTPRequest.RESULT_SUCCESS:
 		_handle_network_error(result)
 		return
 	
-	# Validar código de respuesta HTTP
 	if response_code != 200:
 		_handle_http_error(response_code)
 		return
 	
-	# Parsear JSON
 	var json = JSON.new()
 	var parse_result = json.parse(body.get_string_from_utf8())
 	
@@ -322,21 +289,17 @@ func _on_request_completed(result: int, response_code: int, headers: PackedStrin
 		_handle_json_error(json.get_error_message())
 		return
 	
-	# Procesar respuesta
 	var data = json.get_data()
 	if not _validate_api_response(data):
 		return
 	
-	# Extraer información de la app
 	var app_info = data.results[0]
 	var update_info = _build_update_info(app_info)
 	
-	# Guardar en caché
 	if use_cache:
 		_cached_result = update_info
 		_cache_timestamp = Time.get_ticks_msec() / 1000.0
 	
-	# Emitir señales apropiadas
 	var has_update = update_info.latest_version_code > current_version_code
 	
 	if has_update:
@@ -409,7 +372,6 @@ func _validate_package_name(pkg_name: String) -> bool:
 	if pkg_name == "":
 		return false
 	
-	# Validar formato básico de package name (ej: com.example.app)
 	var regex = RegEx.new()
 	regex.compile("^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$")
 	return regex.search(pkg_name) != null
@@ -489,21 +451,16 @@ func _show_update_dialog(info: Dictionary) -> void:
 	
 	dialog.title = "Actualización disponible"
 	
-	# Obtener tamaño del viewport para calcular límites
 	var viewport_size = Vector2(get_viewport().get_visible_rect().size)
 	var max_dialog_width = min(500, viewport_size.x * 0.8)
 	
-	# Estimar caracteres por línea basado en ancho (aproximado)
-	# Asumiendo ~8 pixels por carácter en fuente normal
 	var chars_per_line = int(max_dialog_width / 8.0)
 	
-	# Limitar el texto del changelog
 	var changelog_text = _clean_html(info.changelog)
 	var max_chars = chars_per_line * 8  # 8 líneas máximo
 	if changelog_text.length() > max_chars:
 		changelog_text = changelog_text.substr(0, max_chars) + "..."
 	
-	# Insertar saltos de línea en texto largo para evitar líneas muy anchas
 	changelog_text = _wrap_text(changelog_text, chars_per_line)
 	
 	dialog.dialog_text = """
@@ -530,17 +487,14 @@ Tamaño: %s
 	
 	dialog.add_cancel_button("Más tarde")
 	
-	# Establecer tamaño mínimo y máximo antes de mostrar
 	dialog.min_size = Vector2(280, 200)
 	dialog.max_size = Vector2(
 		min(500, viewport_size.x * 0.8),
 		min(400, viewport_size.y * 0.8)
 	)
 	
-	# Centrar el diálogo
 	dialog.popup_centered()
 
-## Envuelve texto largo en líneas más cortas
 func _wrap_text(text: String, max_chars: int) -> String:
 	if text.length() <= max_chars:
 		return text
@@ -564,14 +518,12 @@ func _wrap_text(text: String, max_chars: int) -> String:
 	
 	return "\n".join(lines)
 
-## Limpia etiquetas HTML del texto y deja solo el contenido
 func _clean_html(html_text: String) -> String:
 	if html_text.is_empty():
 		return ""
 	
 	var text = html_text
 	
-	# Reemplazar etiquetas de bloque con saltos de línea
 	text = text.replace("</p>", "\n")
 	text = text.replace("</div>", "\n")
 	text = text.replace("</h1>", "\n")
@@ -585,12 +537,10 @@ func _clean_html(html_text: String) -> String:
 	text = text.replace("<br />", "\n")
 	text = text.replace("</li>", "\n")
 	
-	# Remover todas las etiquetas HTML usando regex
 	var regex = RegEx.new()
 	regex.compile("<[^>]+>")
 	text = regex.sub(text, "", true)
 	
-	# Decodificar entidades HTML comunes
 	text = text.replace("&nbsp;", " ")
 	text = text.replace("&amp;", "&")
 	text = text.replace("&lt;", "<")
@@ -598,7 +548,6 @@ func _clean_html(html_text: String) -> String:
 	text = text.replace("&quot;", '"')
 	text = text.replace("&#39;", "'")
 	
-	# Limpiar espacios múltiples y saltos de línea excesivos
 	regex.compile("\\n{3,}")
 	text = regex.sub(text, "\n\n", true)
 	regex.compile(" {2,}")
