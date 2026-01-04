@@ -56,6 +56,8 @@ var package_name: String = ""
 var current_version_code: int = 0
 
 ## Si es true, muestra un diálogo automático cuando hay actualización
+## Nota: El diálogo es básico. Para un diálogo personalizado, establece esto en false
+## y conecta la señal update_available para mostrar tu propio diálogo
 var show_dialog_on_update: bool = true
 
 ## Timeout para las peticiones HTTP (en segundos)
@@ -478,6 +480,9 @@ func _build_update_info(app_info: Dictionary) -> Dictionary:
 #endregion
 
 #region UI
+## Muestra un diálogo simple con la información de actualización
+## Nota: Este es un diálogo básico. Para un diálogo personalizado,
+## establece show_dialog_on_update = false y conecta la señal update_available
 func _show_update_dialog(info: Dictionary) -> void:
 	var dialog = AcceptDialog.new()
 	get_tree().root.add_child(dialog)

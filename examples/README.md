@@ -39,9 +39,9 @@ Esta carpeta contiene ejemplos completos y funcionales de cómo usar el **Apklis
 ### 🔧 Ejemplos Avanzados
 
 6. **[example_custom_dialog.gd](example_custom_dialog.gd)** - Diálogo personalizado
-   - Crear diálogo propio
-   - Estilo personalizado
-   - Animaciones
+   - Crear tu propio diálogo con diseño personalizado
+   - Dos ejemplos: simple y avanzado con animaciones
+   - Implementación completa desde cero
 
 7. **[example_manual_instance.gd](example_manual_instance.gd)** - Sin AutoLoad
    - Instancia manual del checker
@@ -223,18 +223,24 @@ func _ready():
 - Agregar funcionalidad extra al diálogo
 
 **Características v2.0:**
-- ✅ Desactivar diálogo automático
-- ✅ Crear diálogo completamente personalizado
-- ✅ Manejar eventos a tu manera
+- ✅ Desactivar diálogo automático básico
+- ✅ Crear diálogo completamente personalizado desde cero
+- ✅ Dos ejemplos completos: simple y avanzado con animaciones
+- ✅ Implementación completa del UI
 
 **Código clave:**
 ```gdscript
+# Desactivar el diálogo básico incluido
 ApklisUpdate.show_dialog_on_update = false
-ApklisUpdate.update_available.connect(func(info):
-    var my_dialog = MyCustomDialog.new()
-    my_dialog.setup(info)
-    add_child(my_dialog)
-)
+
+# Conectar para mostrar tu propio diálogo personalizado
+ApklisUpdate.update_available.connect(_show_custom_dialog)
+
+func _show_custom_dialog(info: Dictionary):
+    # Crear tu propio panel con el diseño que prefieras
+    var panel = PanelContainer.new()
+    # ... Agregar labels, botones, etc.
+    add_child(panel)
 ```
 
 ---

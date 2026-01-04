@@ -10,8 +10,8 @@ tu_proyecto/
 ├── addons/
 │   └── apklis_update/
 │       ├── ApklisUpdateChecker.gd  ← Copiar esto
-│       ├── ApklisUpdateDialog.gd
-│       └── apklis_update_dialog.tscn
+│       ├── plugin.cfg
+│       └── plugin.gd
 ```
 
 ### Paso 2: Configurar AutoLoad

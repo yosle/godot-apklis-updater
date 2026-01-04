@@ -39,9 +39,9 @@ var current_version_code: int = 0
 ```gdscript
 var show_dialog_on_update: bool = true
 ```
-**Descripción:** Si es `true`, muestra automáticamente un diálogo cuando hay actualización disponible  
+**Descripción:** Si es `true`, muestra automáticamente un diálogo simple cuando hay actualización disponible  
 **Default:** `true`  
-**Nota:** Establecer en `false` para manejar el diálogo manualmente
+**Nota:** El diálogo incluido es básico (AcceptDialog de Godot). Para un diálogo personalizado, establece esto en `false` y conecta la señal `update_available` para mostrar tu propio diálogo con el diseño que prefieras
 
 ---
 

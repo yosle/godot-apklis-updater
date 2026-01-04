@@ -31,8 +31,6 @@ godot-apklis-updater/
 │
 ├── 📁 addons/apklis_update/          # El addon principal
 │   ├── ApklisUpdateChecker.gd        # Sistema de verificación
-│   ├── ApklisUpdateDialog.gd         # Diálogo personalizado
-│   ├── apklis_update_dialog.tscn     # Escena del diálogo
 │   ├── plugin.gd                     # Plugin de Godot
 │   └── plugin.cfg                    # Configuración del plugin
 │

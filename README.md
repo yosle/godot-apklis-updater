@@ -13,7 +13,7 @@ Este proyecto nació por una necesidad práctica: mientras aprendo GODOT y desar
 - **Verificación de actualizaciones** desde la API de Apklis.
 - **Reintentos configurables** para conexiones inestables.
 - **Cache de resultados** para evitar peticiones innecesarias.
-- **Diálogo de actualización** personalizable.
+- **Diálogo de actualización** simple integrado (personalizable por el usuario).
 - **Señales** para integrar el flujo en UI/lógica de juego.
 - **Validación** de `package_name` y de respuestas de la API.
 - **Códigos de error** para diagnóstico.
@@ -254,8 +254,6 @@ godot-apklis-updater/
 ├── addons/
 │   └── apklis_update/
 │       ├── ApklisUpdateChecker.gd      # Script principal
-│       ├── ApklisUpdateDialog.gd       # Diálogo personalizado
-│       ├── apklis_update_dialog.tscn   # Escena del diálogo
 │       ├── plugin.cfg                  # Config del plugin
 │       └── plugin.gd                   # Script del plugin
 ├── examples/

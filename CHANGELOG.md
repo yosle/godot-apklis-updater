@@ -180,6 +180,86 @@ Solo se agregaron nuevas características y mejoras.
 
 ## [Unreleased]
 
+---
+
+## [2.1.0] - 2026-01-04
+
+### 📦 Simplificación del Addon
+
+Esta versión simplifica el addon eliminando el componente de diálogo personalizado, dándole a los usuarios control total sobre el diseño de su UI.
+
+### 🗑️ Eliminado
+
+#### Componente de Diálogo Personalizado
+- **Archivos eliminados:**
+  - `ApklisUpdateDialog.gd` - Componente de diálogo personalizado
+  - `apklis_update_dialog.tscn` - Escena del diálogo
+
+**Razón:** El componente de diálogo limitaba la flexibilidad y agregaba complejidad innecesaria. Ahora los usuarios tienen control total para implementar su propio diálogo con cualquier diseño.
+
+### ✅ Agregado
+
+#### Ejemplos Completos de Diálogo Personalizado
+- `example_custom_dialog.gd` completamente reescrito
+- Ejemplo simple: Diálogo básico con todos los elementos necesarios
+- Ejemplo avanzado: Diálogo con animaciones y efectos visuales
+- Todo implementado programáticamente para facilitar copia/adaptación
+
+#### Documentación de Migración
+- `MIGRATION_DIALOG_REMOVAL.md` - Guía completa de migración
+- `CHANGES_SUMMARY.md` - Resumen de todos los cambios
+- Scripts de limpieza (`cleanup_dialog.bat` y `cleanup_dialog.sh`)
+
+### 🔄 Cambiado
+
+#### ApklisUpdateChecker
+- Comentario actualizado en `show_dialog_on_update` para clarificar que el diálogo incluido es básico
+- Comentario actualizado en `_show_update_dialog()` para indicar su naturaleza simple
+- Ahora usa solo `AcceptDialog` de Godot (más ligero)
+
+#### Documentación Actualizada
+- `README.md`: Características y estructura del proyecto actualizadas
+- `QUICK_START.md`: Sección de instalación simplificada
+- `API_REFERENCE.md`: Documentación de `show_dialog_on_update` clarificada
+- `PROJECT_SUMMARY.md`: Estructura del proyecto actualizada
+- `examples/README.md`: Ejemplo de diálogo personalizado actualizado
+
+### ⭐ Beneficios
+
+#### Para el Proyecto
+- ✅ Código más simple y mantenible
+- ✅ Menor acoplamiento entre componentes
+- ✅ Addon más ligero (2 archivos menos)
+- ✅ Responsabilidad única: solo verificar actualizaciones
+
+#### Para los Usuarios
+- ✅ Control total sobre el diseño del diálogo
+- ✅ Ejemplos más educativos y completos
+- ✅ Fácil de personalizar y adaptar
+- ✅ Dos niveles de complejidad para elegir
+
+### ⚠️ Migración Requerida
+
+**Si usabas `ApklisUpdateDialog` directamente:**
+
+1. El diálogo básico (`AcceptDialog`) sigue funcionando automáticamente
+2. Para diálogo personalizado, consulta `examples/example_custom_dialog.gd`
+3. Copia el código del ejemplo y adáptalo a tu juego
+4. Ejecuta `cleanup_dialog.bat` (Windows) o `cleanup_dialog.sh` (Linux) para eliminar archivos antiguos
+
+**Si solo usabas el sistema de verificación:**
+
+No se requiere cambio alguno. El diálogo básico sigue funcionando igual.
+
+### 📝 Notas
+
+- Esta versión es **compatible** con v2.0.0
+- El diálogo básico incluido sigue funcionando
+- Los usuarios que quieran personalizar ahora tienen ejemplos completos
+- Ver `MIGRATION_DIALOG_REMOVAL.md` para guía detallada
+
+---
+
 ### Considerado para Futuras Versiones
 - [ ] Descarga automática de APK
 - [ ] Instalación automática (requiere permisos especiales)
