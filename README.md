@@ -8,6 +8,8 @@ Este proyecto nació por una necesidad práctica: mientras aprendo GODOT y desar
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
 
+![alt](Screenshot_2.png)
+
 ## Características
 
 - **Verificación de actualizaciones** desde la API de Apklis.

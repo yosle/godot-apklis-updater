@@ -188,6 +188,15 @@ Solo se agregaron nuevas características y mejoras.
 
 Esta versión simplifica el addon eliminando el componente de diálogo personalizado, dándole a los usuarios control total sobre el diseño de su UI.
 
+### 🐛 Corregido
+
+#### Diálogo Básico Responsivo
+- El diálogo básico ahora se ajusta automáticamente al tamaño del viewport
+- Máximo 80% del ancho/alto de la pantalla
+- Limita changelog a 200 caracteres para evitar diálogos muy grandes
+- Funciona correctamente en juegos con resoluciones pequeñas (ej: 800x600)
+- Texto más compacto para reducir tamaño
+
 ### 🗑️ Eliminado
 
 #### Componente de Diálogo Personalizado
